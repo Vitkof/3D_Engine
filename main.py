@@ -17,7 +17,7 @@ class SoftwareRender:
 
     def draw(self):
         self.window.fill(color='darkgray')
-        self.object.draw()
+        self.object.screen_projection()
 
         for e in pg.event.get():
             if e.type == pg.QUIT:
