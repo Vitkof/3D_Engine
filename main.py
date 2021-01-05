@@ -1,6 +1,8 @@
 import pygame as pg
 import sys
 from object3d import *
+from camera import *
+from projection import *
 
 class SoftwareRender:
     def __init__(self):
