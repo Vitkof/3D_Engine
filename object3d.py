@@ -8,7 +8,7 @@ class Object3D:
     def __init__(self, render):
         self.render = render
         # однородные к-ты v = (x,y,z,w), где w=1
-        self.vertexes = np.array([
+        self.peaks = np.array([
             (0,0,0,1), (0,1,0,1), (1,1,0,1), (1,0,0,1),
             (0,0,1,1), (0,1,1,1), (1,1,1,1), (1,0,1,1)
         ])
