@@ -1,34 +1,49 @@
+import math
+import numpy as np
 import pygame as pg
-import sys
-from object3d import *
-from camera import *
-from projection import *
+from matrixs import *
 
-class SoftwareRender:
-    def __init__(self):
-        pg.init()
-        self.RESOLUTION = self.WIDTH, self.HEIGHT = 800, 600
-        self.FPS = 60
-        self.window = pg.display.set_mode(self.RESOLUTION, pg.RESIZABLE)
-        self.W_2, self.H_2 = self.WIDTH // 2, self.HEIGHT // 2
-        self.timer = pg.time.Clock()
-        self.create_obj()
-        #self.object = Object3D(self) без метода, тоже самое
 
-    def draw(self):
-        self.window.fill(color='darkgray')
-        self.object.draw()
+# 1) Локальное пространство(все вершины относительно центра объекта)
+#        >>> [Model Matrix] >>>
+# 2) Мировое пространство(все вершины относительно центра мира)
+#        >>> [Camera Matrix] >>>
+# 3) Камеры система координат(все вершины относительно камеры)
 
-        for e in pg.event.get():
-            if e.type == pg.QUIT:
-                pg.quit()
-                sys.exit()
-        pg.display.update()
-        pg.display.set_caption(str(self.timer.get_fps()))
-        self.timer.tick(self.FPS)
+class Camera:
+    def __init__(self, render, position):
+        self.render = render
+        self.pos = np.array(position + [1.0])
 
-    def create_obj(self):
-        self.camera = Camera(self, [0.5, 0.9, -2.5])
-        self.projection = Projection(self)
-        self.object = Object3D(self)
-        self.object.rotate_Z(math.pi / 6)
+        # Вектора ориентации камеры
+        self.right = np.array([1, 0, 0, 1])
+        self.up = np.array([0, 1, 0, 1])
+        self.forward = np.array([0, 0, 1, 1])
+
+        # Horizon & Vertical области видимости  камеры
+        self.h_fov = math.pi / 3
+        self.v_fov = self.h_fov * (render.HEIGHT / render.WIDTH)
+        # Ближняя и Дальняя области плоскости усеченной пирамиды обзора
+        self.near_plane = 0.1
+        self.far_plane = 100
+
+    def translate_matrix(self):
+        x, y, z, w = self.pos
+        T = np.array([(1, 0, 0, 1),
+                      (0, 1, 0, 1),
+                      (0, 0, 1, 1),
+                      (-x, -y, -z, 1)])
+        return T
+
+    def rotate_matrix(self):
+        rx, ry, rz, w = self.right
+        ux, uy, uz, w = self.up
+        fx, fy, fz, w = self.forward
+        R = np.array([[rx, ux, fx, 0],
+                      [ry, uy, fy, 0],
+                      [rz, uz, fz, 0],
+                      [0, 0, 0, 1]])
+        return R
+
+    def camera_matrix(self):
+        return self.translate_matrix() @ self.rotate_matrix()
