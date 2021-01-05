@@ -24,7 +24,7 @@ class SoftwareRender:
                 pg.quit()
                 sys.exit()
         pg.display.update()
-        pg.display.set_caption(str(self.timer.get_fps()))
+        pg.display.set_caption(f"3D Engine [fps: {round(self.timer.get_fps(), 1)}]")
         self.timer.tick(self.FPS)
 
     def create_obj(self):
