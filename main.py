@@ -18,6 +18,7 @@ class SoftwareRender:
     def draw(self):
         self.window.fill(color='darkgray')
         self.object.screen_projection()
+        self.camera.controller()
 
         for e in pg.event.get():
             if e.type == pg.QUIT:
