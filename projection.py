@@ -6,8 +6,8 @@ class Projection:
     def __init__(self, render):
         NEAR = render.camera.near_plane
         FAR = render.camera.far_plane
-        RIGHT = math.tan(render.camera.h_fov / 2)
-        TOP = math.tan(render.camera.v_fov / 2)
+        RIGHT = math.tan(render.camera.h_FoV / 2)
+        TOP = math.tan(render.camera.v_FoV / 2)
         LEFT = -RIGHT
         BOTTOM = -TOP
 
